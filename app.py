@@ -12,7 +12,7 @@ with open("styles.css") as f:
 st.set_page_config(page_title="HDB Resale Price Predictor", page_icon="🏠", layout="wide")
 
 
-model = joblib.load('rf_model.joblib')
+model = joblib.load('randomforestmodel.joblib')
 
 # --- custom banner with gradient background ---
 st.markdown("""
