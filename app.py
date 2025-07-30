@@ -59,50 +59,49 @@ with col2:
     )
 
     # --- Show recent transactions for selected town in a dropdown ---
-    try:
-        # load historical data about HDB transactions
-        df_hdb = pd.read_csv('hdb.csv')
-        # Ensure 'month' column is parsed as datetime for easy sorting
-        if 'month' in df_hdb.columns:
-            df_hdb['month'] = pd.to_datetime(df_hdb['month'], errors='coerce')
-            # Filter and show 5 most recent transactions for selected town
-            recent = (
-                df_hdb[df_hdb['town'] == town]
-                .dropna(subset=['month'])
-                .sort_values('month', ascending=False)
-                .head(5)
-            )
-            if not recent.empty:
-                with st.expander(f"🕵️‍♂️ Most Recent Transactions in {town}", expanded=False):
-                    st.markdown(
-                        "<div class='recent-transactions-title'>Most Recent HDB Transactions:</div>",
-                        unsafe_allow_html=True
-                    )
-                    # process and display relevant data
-                    recent_display = (
-                        recent[['block', 'street_name', 'flat_model', 'flat_type', 'floor_area_sqm', 'resale_price']]
-                        .rename(columns={
-                            'block': 'Block',
-                            'street_name': 'Street',
-                            'flat_model': 'Model',
-                            'flat_type': 'Type',
-                            'floor_area_sqm': 'Area (sqm)',
-                            'resale_price': 'Resale Price'
-                        })
-                        .reset_index(drop=True)
-                    )
-                    # format price and show data
-                    recent_display['Resale Price'] = recent_display['Resale Price'].apply(lambda x: f"${int(x):,}")
-                    st.dataframe(
-                        recent_display,
-                        hide_index=True,
-                        use_container_width=True
-                    )
-            else:
-                st.info(f"No recent transactions found for {town}.")
-    except Exception as e:
-        # show warning if there's an issue loading data
-        st.warning(f"Could not load recent transactions data. ({e})")
+
+# Load historical data about HDB transactions
+df_hdb = pd.read_csv('hdb.csv')
+
+# Ensure 'month' column is parsed as datetime for easy sorting
+df_hdb['month'] = pd.to_datetime(df_hdb['month'], errors='coerce')
+
+# Filter and show 5 most recent transactions for selected town
+recent = (
+    df_hdb[df_hdb['town'] == town]
+    .dropna(subset=['month'])
+    .sort_values('month', ascending=False)
+    .head(5)
+)
+
+if not recent.empty:
+    with st.expander(f"🕵️‍♂️ Most Recent Transactions in {town}", expanded=False):
+        st.markdown(
+            "<div class='recent-transactions-title'>Most Recent HDB Transactions:</div>",
+            unsafe_allow_html=True
+        )
+        # Process and display relevant data
+        recent_display = (
+            recent[['block', 'street_name', 'flat_model', 'flat_type', 'floor_area_sqm', 'resale_price']]
+            .rename(columns={
+                'block': 'Block',
+                'street_name': 'Street',
+                'flat_model': 'Model',
+                'flat_type': 'Type',
+                'floor_area_sqm': 'Area (sqm)',
+                'resale_price': 'Resale Price'
+            })
+            .reset_index(drop=True)
+        )
+        # Format price and show data
+        recent_display['Resale Price'] = recent_display['Resale Price'].apply(lambda x: f"${int(x):,}")
+        st.dataframe(
+            recent_display,
+            hide_index=True,
+            use_container_width=True
+        )
+else:
+    st.info(f"No recent transactions found for {town}.")
 
 st.markdown('<div style="height:32px"></div>', unsafe_allow_html=True)
 
