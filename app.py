@@ -11,14 +11,8 @@ with open("styles.css") as f:
 # setting up the page config (title, icon, and layout)
 st.set_page_config(page_title="HDB Resale Price Predictor", page_icon="🏠", layout="wide")
 
-# --- loading the pre-trained model ---
-try:
-    # load the machine learning model
-    model = joblib.load('rf_model.pkl')
-except Exception as e:
-    # if model fails to load, display error message
-    st.error("Model file not found or not loadable. Please check that 'rf_model.pkl' is in the app folder.")
-    st.stop()  # halt the app if model can't be loaded
+
+model = joblib.load('rf_model.joblib')
 
 # --- custom banner with gradient background ---
 st.markdown("""
@@ -159,9 +153,6 @@ if st.button("🔮 Predict My HDB Price", use_container_width=True):
         'town': [town],
         'flat_model': [flat_model]
     })
-    
-    # One-hot encode categorical columns
-    input_df = pd.get_dummies(input_df, columns=['flat_type', 'town', 'flat_model'])
     
     # Reindex to match model feature order
     input_df = input_df.reindex(columns=model.feature_names_in_, fill_value=0)
