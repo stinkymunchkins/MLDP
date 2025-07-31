@@ -53,7 +53,7 @@ with col2:
         "Flat Model", sorted([
             "Improved", "New Generation", "Simplified", "Premium Apartment", "Maisonette", 
             "Apartment", "Adjoined flat", "Type S1", "Type S2", "Standard", "DBSS", "Terrace", 
-            "Model A2", "2-room", "Type 1", "Type 2"
+            "2-room"
         ]),
         help="Select your flat model type"
     )
